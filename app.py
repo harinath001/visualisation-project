@@ -9,6 +9,8 @@ import json
 
 app = Flask(__name__)
 
+enable_print = False
+
 @app.route('/stats/add', methods=["POST"])
 def stats_add():
     values = request.get_json()
@@ -31,12 +33,13 @@ def stats_add():
             for each in extra_stats:
                 session.delete(each)
         try:
-            cpu = float(values.get("cpu")) if "cpu" in values else None
-            disk = float(values.get("disk")) if "disk" in values else None
-            memory = float(values.get("memory")) if "memory" in values else None
-            gpu = float(values.get("gpu")) if "gpu" in values else None
-            network = float(values.get("network")) if "network" in values else None
-            processes = float(values.get("processes")) if "processes" in values else None
+            if enable_print: print(json.dumps(values, indent=4))
+            cpu = float(values.get("cpu")) if "cpu" in values and values.get("cpu") else None
+            disk = float(values.get("disk")) if "disk" in values and values.get("disk") else None
+            memory = float(values.get("memory")) if "memory" in values and values.get("memory") else None
+            gpu = float(values.get("gpu")) if "gpu" in values and values.get("gpu") else None
+            network = float(values.get("network")) if "network" in values and values.get("network") else None
+            processes = float(values.get("processes")) if "processes" in values and values.get("processes") else None
             new_stat = Stats(machine=machine, cpu=cpu, memory=memory,
                          disk=disk, gpu=gpu,
                          network=network, processes=processes)
