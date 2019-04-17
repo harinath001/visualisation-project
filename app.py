@@ -174,7 +174,7 @@ def get_logs():
     if machine:
         # add the filter for the datetime
         from_date = datetime.strptime(from_date_time, "%Y-%m-%d %H:%M:%S") if from_date_time else datetime.now()-dt.timedelta(days=36500)
-        to_date = datetime.strptime(to_date_time, "%Y-%m-d %H:%M:%S") if to_date_time else datetime.now()+dt.timedelta(days=365)
+        to_date = datetime.strptime(to_date_time, "%Y-%m-%d %H:%M:%S") if to_date_time else datetime.now()+dt.timedelta(days=365)
         all_logs = session.query(Logs).filter( and_( (Logs.machine == machine) ,  Logs.date_time >= from_date , Logs.date_time <= to_date) ).all()
         logs["results"] = []
         for each in all_logs:
