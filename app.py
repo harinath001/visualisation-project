@@ -1,12 +1,13 @@
 from flask import Flask
 from flask import request
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, and_, or_
 from config import *
 from models import Stats,Machine, Logs
 from sqlalchemy.orm import sessionmaker
 import json
 from datetime import datetime
+import datetime as dt
 
 app = Flask(__name__)
 
@@ -156,7 +157,10 @@ def add_logs():
 @app.route('/logs/get', methods=["POST"])
 def get_logs():
     values = request.get_json()
-    name = request.values.get('server_name')
+    name = values.get('server_name')
+    from_date_time = values.get("from_date_time", None)
+    to_date_time = values.get("to_date_time", None)
+
     logs = {}
     if not name:
         return json.dumps({"error": "invalid name"})
@@ -169,14 +173,16 @@ def get_logs():
 
     if machine:
         # add the filter for the datetime
-        all_logs = session.query(Logs).filter_by(machine=machine).all()
+        from_date = datetime.strptime(from_date_time, "%Y-%m-%d %H:%M:%S") if from_date_time else datetime.now()-dt.timedelta(days=36500)
+        to_date = datetime.strptime(to_date_time, "%Y-%m-d %H:%M:%S") if to_date_time else datetime.now()+dt.timedelta(days=365)
+        all_logs = session.query(Logs).filter( and_( (Logs.machine == machine) ,  Logs.date_time >= from_date , Logs.date_time <= to_date) ).all()
         logs["results"] = []
         for each in all_logs:
             logs["results"].append(
                 {
                     "status_code": each.status_code,
                     "uri": each.uri,
-                    "date_time": each.date_time,
+                    "date_time": each.date_time.strftime("%Y-%m-%d %H:%M:%S"),
                     "source_ip": each.source_ip,
                     "request_type": each.request_type,
                  }
