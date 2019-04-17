@@ -3,13 +3,14 @@ from flask import request
 
 from sqlalchemy import create_engine
 from config import *
-from models import Stats,Machine
+from models import Stats,Machine, Logs
 from sqlalchemy.orm import sessionmaker
 import json
+from datetime import datetime
 
 app = Flask(__name__)
 
-enable_print = False
+enable_print = True
 
 @app.route('/stats/add', methods=["POST"])
 def stats_add():
@@ -110,6 +111,81 @@ def new_machine():
 
     if session: session.close()
     return json.dumps(result)
+
+@app.route('/logs/add', methods=["POST"])
+def add_logs():
+    values = request.get_json()
+
+    name = values.get('server_name', None)
+    logs = {}
+    if not name:
+        return json.dumps({"error": "invalid name"})
+    session = Session()
+    machine = None
+    try:
+        if enable_print: print("the name of the server is ", name)
+        machine = session.query(Machine).filter_by(name=name).one()
+    except Exception as ex:
+        logs = {"excpetion": "None or More than one servers exist with the name %s"%(name, )}
+
+    if machine:
+
+        try:
+            if enable_print: print(json.dumps(values, indent=4))
+
+            date_time = datetime.strptime(values.get("date_time"), "%Y-%m-%d %H:%M:%S") if "date_time" in values and values.get("date_time") else None
+            status_code = int(values.get("status_code")) if "status_code" in values and values.get("status_code") else None
+            source_ip = values.get("source_ip") if "source_ip" in values and values.get("source_ip") else None
+            request_type = values.get("request_type") if "request_type" in values and values.get("request_type") else None
+            uri = values.get("uri") if "uri" in values and values.get("uri") else None
+            new_log = Logs(machine=machine, date_time=date_time, status_code=status_code,
+                             source_ip=source_ip, request_type=request_type, uri=uri
+                         )
+            session.add(new_log)
+            session.commit()
+            logs = {"status": "Success"}
+        except Exception as ex:
+            logs = {"exception": str(ex)}
+
+
+    session.close()
+    return json.dumps(logs)
+
+
+
+@app.route('/logs/get', methods=["POST"])
+def get_logs():
+    values = request.get_json()
+    name = request.values.get('server_name')
+    logs = {}
+    if not name:
+        return json.dumps({"error": "invalid name"})
+    session = Session()
+    machine = None
+    try:
+        machine = session.query(Machine).filter_by(name=name).one()
+    except Exception as ex:
+        logs = {"excpetion": "None or More than one servers exist with the name %s"%(name, )}
+
+    if machine:
+        # add the filter for the datetime
+        all_logs = session.query(Logs).filter_by(machine=machine).all()
+        logs["results"] = []
+        for each in all_logs:
+            logs["results"].append(
+                {
+                    "status_code": each.status_code,
+                    "uri": each.uri,
+                    "date_time": each.date_time,
+                    "source_ip": each.source_ip,
+                    "request_type": each.request_type,
+                 }
+            )
+
+    session.close()
+    return json.dumps(logs)
+
+
 
 @app.route('/')
 def root():

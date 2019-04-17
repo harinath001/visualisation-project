@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from config import mysql_host, mysql_password, mysql_port, mysql_user, mysql_db
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import sessionmaker
@@ -28,6 +28,17 @@ class Machine(Base):
     ip = Column(String(16))
     name = Column(String(50), unique=True)
     #stats = relationship("Stats", order_by=Stats.id)
+
+class Logs(Base):
+    __tablename__ = 'logs'
+    id = Column(Integer, primary_key=True)
+    machine_id = Column(Integer, ForeignKey('machine.id'))
+    machine = relationship("Machine")
+    date_time = Column(DateTime)
+    status_code = Column(Integer)
+    source_ip = Column(String(16))
+    request_type = Column(String(10))
+    uri = Column(String(1024))
 
 Base.metadata.create_all(engine)
 print("tables created...")
