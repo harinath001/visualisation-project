@@ -3,7 +3,7 @@
 
 var server_name = null;
 var server_list = null;
-var stats_event = null;
+var stats_interval = null;
 
 
 
@@ -27,6 +27,17 @@ function show_servers(){
 
 }
 
+function enable_stats(){
+	// this function is to start hitting the server for data
+	stats_interval = setInterval(refresh_stats_data, 3000);
+
+}
+function disable_stats(){
+
+	// this function to stop the event of hitting the server for data
+	if(stats_interval)clearInterval(stats_interval);
+}
+
 
 function show_dashboard(){
 	// this function will show the dashboard
@@ -36,7 +47,11 @@ function show_dashboard(){
 	stats_board.style.display = "none";
 	logs_board.style.display = "none";
 	dashboard.style.display = "inline";
+	disable_stats();
 }
+
+
+
 
 function show_stats(){
 	// this function will show the stats board
@@ -46,6 +61,7 @@ function show_stats(){
 	stats_board.style.display = "inline";
 	logs_board.style.display = "none";
 	dashboard.style.display = "none";
+	enable_stats();
 
 }
 
@@ -57,18 +73,36 @@ function show_logs(){
 	stats_board.style.display = "none";
 	logs_board.style.display = "inline";
 	dashboard.style.display = "none";
+	disable_stats();
 }
 
 
+function refresh_stats_data(){
+	// alert("stats data refreshed.");
+	get_stats_data(server_name);
+	var cpu_data;
+	var network_data;
+	var memory_data;
+	var gpu_data;
+	var disk_data;
+	var processes_data;
 
-
-
-function get_stats_data(server_name){
+	render_line_graph("cpu_board", cpu_data);
+	render_line_graph("gpu_board", gpu_data);
+	render_line_graph("network_board", network_data);
+	render_line_graph("memory_board", memory_data);
+	render_line_graph("disk_board", disk_data);
+	render_line_graph("processes_board", processes_data);
 
 }
 
 
-function get_logs_data(server_name){
+function get_stats_data(given_server_name){
+
+}
+
+
+function get_logs_data(given_server_name){
 
 }
 
