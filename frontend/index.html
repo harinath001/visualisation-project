@@ -42,64 +42,115 @@
     		width: 100%;
     		height: 85%;
     	}
+    	button {
+		  background: #e8e8e8;
+		  width: auto;
+		  display: inline-block;
+		  font-size: 28px;
+		  margin-top:30px;
+		  /*position: absolute;*/
+  		  /*top: 38%;*/
+
+  		  /*transform: translateY(-50%);*/
+  		  /*transform: translateX(-50%);*/
+		}
     </style>
+    <script type="text/javascript" src="index.js"></script>
 </head>
 
 <body style="text-align:center">
-<div style="width:100%; height:100px;">
-
-	<h1>STATS VISUALISATION</h1>
-
-</div>
-<div class="stats_box left_box">
-	<div class="internal_top_box">
-		<h1>CPU</h1>
-	</div>
-	<div class="internal_bottom_box" id="cpu_board">
-
-	</div>
-</div><!-- 
- --><div class="stats_box middle_box">
- 	<div class="internal_top_box">
-		<h1>MEMORY</h1>
-	</div>
-	<div class="internal_bottom_box" id="memory_board">
+	<div id="dashboard" style="width:100%; height:auto;">
+		<div style="width:100%; height:100px;">
+			<div style="width:70%; height:100%;">
+				<h1>DASHBOARD</h1>
+			</div><!-- 
+		 --><div style="width:12%; height:100%; float:right; position:relative;">
+		 		<button onclick="show_stats();" >Show Stats</button>
+			</div><!-- 
+		 --><div style="width:12%; height:100%; float:left; position:relative;">
+		 		<button onclick="show_logs();" >Show Logs</button>
+			</div>
+		</div>
 
 	</div>
+	<div id="stats" style="width:100%; height:auto;">
 
-</div><!-- 
- --><div class="stats_box right_box">
- 	<div class="internal_top_box">
-		<h1>DISK</h1>
-	</div>
-	<div class="internal_bottom_box" id="disk_board">
+		<div style="width:100%; height:100px;">
+			<div style="width:70%; height:100%;">
+				<h1>Stats Visualisation</h1>
+			</div><!-- 
+		 --><div style="width:12%; height:100%; float:right;">
+		 		<button onclick="show_logs();">Show Logs</button>
+			</div><!-- 
+		 --><div style="width:12%; height:100%; float:left;">
+		 		<button onclick="show_dashboard();">Show Dashboard</button>
+			</div>
+		</div><!-- 
+	 --><div class="stats_box left_box">
+			<div class="internal_top_box">
+				<h1>CPU</h1>
+			</div>
+			<div class="internal_bottom_box" id="cpu_board">
+
+			</div>
+		</div><!-- 
+	--><div class="stats_box middle_box">
+			 	<div class="internal_top_box">
+					<h1>MEMORY</h1>
+				</div>
+				<div class="internal_bottom_box" id="memory_board">
+
+				</div>
+		</div><!-- 
+	--><div class="stats_box right_box">
+		 	<div class="internal_top_box">
+				<h1>DISK</h1>
+			</div>
+			<div class="internal_bottom_box" id="disk_board">
+
+			</div>
+		</div><!-- 
+	--><div class="stats_box left_box">
+		 	<div class="internal_top_box">
+				<h1>NETWORK</h1>
+			</div>
+			<div class="internal_bottom_box" id="network_board">
+
+			</div>
+		</div><!-- 
+	--><div class="stats_box middle_box">
+		 	<div class="internal_top_box">
+				<h1>PROCESSES</h1>
+			</div>
+			<div class="internal_bottom_box" id="processes_board">
+
+			</div>
+		</div><!-- 
+		 --><div class="stats_box right_box">
+		 	<div class="internal_top_box">
+				<h1>GPU</h1>
+			</div>
+			<div class="internal_bottom_box" id="gpu_board">
+
+			</div>
+
+		</div>
 
 	</div>
-</div><!-- 
- --><div class="stats_box left_box">
- 	<div class="internal_top_box">
-		<h1>NETWORK</h1>
-	</div>
-	<div class="internal_bottom_box" id="network_board">
-
-	</div>
-</div><!-- 
- --><div class="stats_box middle_box">
- 	<div class="internal_top_box">
-		<h1>PROCESSES</h1>
-	</div>
-	<div class="internal_bottom_box" id="processes_board">
-
-	</div>
-</div><!-- 
- --><div class="stats_box right_box">
- 	<div class="internal_top_box">
-		<h1>GPU</h1>
-	</div>
-	<div class="internal_bottom_box" id="gpu_board">
-
+	<div id="logs" style="width:100%; height:auto;">
+		<div style="width:100%; height:100px;">
+			<div style="width:70%; height:100%;">
+				<h1>Logs Visualisation</h1>
+			</div><!-- 
+		 --><div style="width:12%; height:100%; float:right;">
+		 		<button onclick="show_stats();">Show Stats</button>
+			</div><!-- 
+		 --><div style="width:12%; height:100%; float:left;">
+		 		<button onclick="show_dashboard();">Show Dashboard</button>
+			</div>
+		</div>
 	</div>
 
-</div>
+
 </body>
 </html>
