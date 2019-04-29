@@ -29,7 +29,7 @@ function show_servers(){
 
 function enable_stats(){
 	// this function is to start hitting the server for data
-	stats_interval = setInterval(refresh_stats_data, 3000);
+	stats_interval = setInterval(refresh_stats_board, 3000);
 
 }
 function disable_stats(){
@@ -77,7 +77,7 @@ function show_logs(){
 }
 
 
-function refresh_stats_data(){
+function refresh_stats_board(){
 	// alert("stats data refreshed.");
 	get_stats_data(server_name);
 	var cpu_data;
@@ -94,6 +94,11 @@ function refresh_stats_data(){
 	render_line_graph("disk_board", disk_data);
 	render_line_graph("processes_board", processes_data);
 
+}
+
+function refresh_logs_board(){
+	get_logs_data(server_name);
+	alert("will refresh logs board");
 }
 
 
