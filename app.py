@@ -13,6 +13,20 @@ app = Flask(__name__)
 
 enable_print = True
 
+@app.route('/server_list', methods=["GET"])
+def get_server_list():
+    session = Session()
+    retval = {}
+    try:
+        all_servers = session.query(Machine).all()
+        names = []
+        for each in all_servers:
+            names.append(each.name)
+        retval = json.dumps(names)
+    except Exception as ex:
+        retval = {"exception": str(ex)}
+    return retval
+
 @app.route('/stats/add', methods=["POST"])
 def stats_add():
     values = request.get_json()
