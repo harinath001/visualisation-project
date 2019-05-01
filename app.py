@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, and_, or_
 from config import *
 from models import Stats,Machine, Logs
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import func
 import json
 from datetime import datetime
 import datetime as dt
@@ -30,7 +31,8 @@ def get_server_list():
 @app.route('/stats/add', methods=["POST"])
 def stats_add():
     values = request.get_json()
-
+    if not values:
+        return json.dumps({"error": "please provide data with json headers"})
     name = values.get('server_name', None)
     stats = {}
     if not name:
@@ -103,6 +105,8 @@ def stats_get():
 @app.route("/new-machine", methods=["POST"])
 def new_machine():
     values = request.get_json()
+    if not values:
+        return json.dumps({"error": "please provide data with json headers"})
     result = {}
     session = None
     password = values.get("password", None)
@@ -130,7 +134,8 @@ def new_machine():
 @app.route('/logs/add', methods=["POST"])
 def add_logs():
     values = request.get_json()
-
+    if not values:
+        return json.dumps({"error": "please provide data with json headers"})
     name = values.get('server_name', None)
     logs = {}
     if not name:
@@ -171,14 +176,19 @@ def add_logs():
 @app.route('/logs/get', methods=["POST"])
 def get_logs():
     values = request.get_json()
+    if not values:
+        return json.dumps({"error": "please provide data with json headers"})
     name = values.get('server_name')
     from_date_time = values.get("from_date_time", None)
     to_date_time = values.get("to_date_time", None)
     uri_filter = values.get("uri_filter", None)
+    selection_element = values.get("selection_element", None)
 
     logs = {}
     if not name:
         return json.dumps({"error": "invalid name"})
+    if not selection_element or selection_element not in Logs.__dict__:
+        return json.dumps({"error": "no selection element  given or selection element not found in table"})
     session = Session()
     machine = None
     try:
@@ -190,21 +200,22 @@ def get_logs():
         # add the filter for the datetime
         from_date = datetime.strptime(from_date_time, "%Y-%m-%d %H:%M:%S") if from_date_time else datetime.now()-dt.timedelta(days=36500)
         to_date = datetime.strptime(to_date_time, "%Y-%m-%d %H:%M:%S") if to_date_time else datetime.now()+dt.timedelta(days=365)
-        query = session.query(Logs).filter( and_( (Logs.machine == machine) ,  Logs.date_time >= from_date , Logs.date_time <= to_date) )
+        query = session.query(Logs.__dict__[selection_element], func.count(Logs.__dict__[selection_element])).filter( and_( (Logs.machine == machine) ,  Logs.date_time >= from_date , Logs.date_time <= to_date) )
+        query = query.group_by(Logs.__dict__[selection_element])
         if uri_filter: query = query.filter(Logs.uri.like("%"+uri_filter+"%"))
         all_logs = query.all()
-        logs["results"] = []
-        for each in all_logs:
-            logs["results"].append(
-                {
-                    "status_code": each.status_code,
-                    "uri": each.uri,
-                    "date_time": each.date_time.strftime("%Y-%m-%d %H:%M:%S"),
-                    "source_ip": each.source_ip,
-                    "request_type": each.request_type,
-                 }
-            )
-
+        # logs["results"] = []
+        # for each in all_logs:
+        #     logs["results"].append(
+        #         {
+        #             "status_code": each.status_code,
+        #             "uri": each.uri,
+        #             "date_time": each.date_time.strftime("%Y-%m-%d %H:%M:%S"),
+        #             "source_ip": each.source_ip,
+        #             "request_type": each.request_type,
+        #          }
+        #     )
+        logs = all_logs
     session.close()
     return json.dumps(logs)
 
