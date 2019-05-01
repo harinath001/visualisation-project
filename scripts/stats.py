@@ -32,11 +32,11 @@ while True:
     processes = len(psutil.pids())
     gpu = None
     memory = psutil.virtual_memory()[2]
-    disk = psutil.disk_usage('/').total
+    disk = (psutil.disk_usage('/').total)/(1024*1024)
     network = (psutil.net_io_counters().bytes_sent - prev_bytes_sent)/(time.time() - prev_time)
     prev_time = time.time()
     try:
-        r = requests.post(url, json={"server_name": "server 1", "cpu": cpu, "memory":memory, "network": network, "gpu": gpu, "processes": processes})
+        r = requests.post(url, json={"server_name": "server 1", "cpu": cpu, "memory":memory, "network": network, "gpu": gpu, "processes": processes, "disk": disk})
         print(json.dumps(r.json(), indent=4))
     except Exception as ex:
         print(ex)
