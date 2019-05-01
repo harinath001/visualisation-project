@@ -174,6 +174,7 @@ def get_logs():
     name = values.get('server_name')
     from_date_time = values.get("from_date_time", None)
     to_date_time = values.get("to_date_time", None)
+    uri_filter = values.get("uri_filter", None)
 
     logs = {}
     if not name:
@@ -189,7 +190,9 @@ def get_logs():
         # add the filter for the datetime
         from_date = datetime.strptime(from_date_time, "%Y-%m-%d %H:%M:%S") if from_date_time else datetime.now()-dt.timedelta(days=36500)
         to_date = datetime.strptime(to_date_time, "%Y-%m-%d %H:%M:%S") if to_date_time else datetime.now()+dt.timedelta(days=365)
-        all_logs = session.query(Logs).filter( and_( (Logs.machine == machine) ,  Logs.date_time >= from_date , Logs.date_time <= to_date) ).all()
+        query = session.query(Logs).filter( and_( (Logs.machine == machine) ,  Logs.date_time >= from_date , Logs.date_time <= to_date) )
+        if uri_filter: query = query.filter(Logs.uri.like("%"+uri_filter+"%"))
+        all_logs = query.all()
         logs["results"] = []
         for each in all_logs:
             logs["results"].append(
