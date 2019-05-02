@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import request
-
+from flask_cors import CORS
 from sqlalchemy import create_engine, and_, or_
 from config import *
 from models import Stats,Machine, Logs
@@ -11,7 +11,7 @@ from datetime import datetime
 import datetime as dt
 
 app = Flask(__name__)
-
+CORS(app)
 enable_print = True
 
 @app.route('/server_list', methods=["GET"])
