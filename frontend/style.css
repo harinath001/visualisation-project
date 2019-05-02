@@ -1,6 +1,7 @@
 .line {
     fill: none;
-    stroke: #7bff00;
+    /*stroke: #191970;*/
+    stroke: #00FF7F;
     stroke-width: 3;
 }
 
@@ -17,4 +18,16 @@
 
 .grid path {
   stroke-width: 0;
+}
+
+.axisWhite line{
+  stroke: white;
+}
+
+.axisWhite path{
+  stroke: white;
+}
+
+.axisWhite text{
+  fill: white;
 }
