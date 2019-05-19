@@ -182,13 +182,13 @@ def get_logs():
     from_date_time = values.get("from_date_time", None)
     to_date_time = values.get("to_date_time", None)
     uri_filter = values.get("uri_filter", None)
-    selection_element = values.get("selection_element", None)
+    #selection_element = values.get("selection_element", None)
 
     logs = {}
     if not name:
         return json.dumps({"error": "invalid name"})
-    if not selection_element or selection_element not in Logs.__dict__:
-        return json.dumps({"error": "no selection element  given or selection element not found in table"})
+    #if not selection_element or selection_element not in Logs.__dict__:
+    #    return json.dumps({"error": "no selection element  given or selection element not found in table"})
     session = Session()
     machine = None
     try:
@@ -200,8 +200,8 @@ def get_logs():
         # add the filter for the datetime
         from_date = datetime.strptime(from_date_time, "%Y-%m-%d %H:%M:%S") if from_date_time else datetime.now()-dt.timedelta(days=36500)
         to_date = datetime.strptime(to_date_time, "%Y-%m-%d %H:%M:%S") if to_date_time else datetime.now()+dt.timedelta(days=365)
-        query = session.query(Logs.__dict__[selection_element], func.count(Logs.__dict__[selection_element])).filter( and_( (Logs.machine == machine) ,  Logs.date_time >= from_date , Logs.date_time <= to_date) )
-        query = query.group_by(Logs.__dict__[selection_element])
+        query = session.query(Logs.date_time, status_code, source_ip, request_type  ).filter( and_( (Logs.machine == machine) ,  Logs.date_time >= from_date , Logs.date_time <= to_date) )
+        #query = query.group_by(Logs.__dict__[selection_element])
         if uri_filter: query = query.filter(Logs.uri.like("%"+uri_filter+"%"))
         all_logs = query.all()
         # logs["results"] = []
