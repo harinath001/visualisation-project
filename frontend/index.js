@@ -202,10 +202,12 @@ function render_line_graph(div_id, data){
 	// Add the X Axis
 	svg.append("g")
 		.attr("transform", "translate(0," + height + ")")
+		.attr("class", "axisWhite")
 		.call(d3.axisBottom(x));
 
 	// Add the Y Axis
 	svg.append("g")
+		.attr("class", "axisWhite")
 		.call(d3.axisLeft(y));
 
 	// svg.selectAll(".dot")
