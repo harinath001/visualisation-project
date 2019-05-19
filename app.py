@@ -200,22 +200,22 @@ def get_logs():
         # add the filter for the datetime
         from_date = datetime.strptime(from_date_time, "%Y-%m-%d %H:%M:%S") if from_date_time else datetime.now()-dt.timedelta(days=36500)
         to_date = datetime.strptime(to_date_time, "%Y-%m-%d %H:%M:%S") if to_date_time else datetime.now()+dt.timedelta(days=365)
-        query = session.query(Logs.date_time, status_code, source_ip, request_type  ).filter( and_( (Logs.machine == machine) ,  Logs.date_time >= from_date , Logs.date_time <= to_date) )
+        query = session.query(Logs.date_time, Logs.status_code, Logs.source_ip, Logs.request_type, Logs.uri  ).filter( and_( (Logs.machine == machine) ,  Logs.date_time >= from_date , Logs.date_time <= to_date) )
         #query = query.group_by(Logs.__dict__[selection_element])
         if uri_filter: query = query.filter(Logs.uri.like("%"+uri_filter+"%"))
         all_logs = query.all()
-        # logs["results"] = []
-        # for each in all_logs:
-        #     logs["results"].append(
-        #         {
-        #             "status_code": each.status_code,
-        #             "uri": each.uri,
-        #             "date_time": each.date_time.strftime("%Y-%m-%d %H:%M:%S"),
-        #             "source_ip": each.source_ip,
-        #             "request_type": each.request_type,
-        #          }
-        #     )
-        logs = all_logs
+        logs["results"] = []
+        for each in all_logs:
+            logs["results"].append(
+                {
+                    "status_code": each.status_code,
+                    "uri": each.uri,
+                    "date_time": str(each.date_time.strftime("%Y-%m-%d %H:%M:%S")),
+                    "source_ip": each.source_ip,
+                    "request_type": each.request_type,
+                 }
+            )
+        #logs = all_logs
     session.close()
     return json.dumps(logs)
 
