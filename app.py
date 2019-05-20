@@ -9,6 +9,7 @@ from sqlalchemy import func
 import json
 from datetime import datetime
 import datetime as dt
+from random import randint
 
 app = Flask(__name__)
 CORS(app)
@@ -197,11 +198,9 @@ def get_logs():
         logs = {"excpetion": "None or More than one servers exist with the name %s"%(name, )}
 
     if machine:
-        # add the filter for the datetime
-        from_date = datetime.strptime(from_date_time, "%Y-%m-%d %H:%M:%S") if from_date_time else datetime.now()-dt.timedelta(days=36500)
-        to_date = datetime.strptime(to_date_time, "%Y-%m-%d %H:%M:%S") if to_date_time else datetime.now()+dt.timedelta(days=365)
-        query = session.query(Logs.date_time, Logs.status_code, Logs.source_ip, Logs.request_type, Logs.uri  ).filter( and_( (Logs.machine == machine) ,  Logs.date_time >= from_date , Logs.date_time <= to_date) )
-        #query = query.group_by(Logs.__dict__[selection_element])
+	from_id = randint(1, 16000)
+	to_id = from_id+999 
+	query = session.query(Logs.date_time, Logs.status_code, Logs.source_ip, Logs.request_type, Logs.uri  ).filter( and_( (Logs.machine == machine) ,  Logs.id >= from_id , Logs.id <= to_id) )
         if uri_filter: query = query.filter(Logs.uri.like("%"+uri_filter+"%"))
         all_logs = query.all()
         logs["results"] = []
@@ -215,7 +214,6 @@ def get_logs():
                     "request_type": each.request_type,
                  }
             )
-        #logs = all_logs
     session.close()
     return json.dumps(logs)
 
