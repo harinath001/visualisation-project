@@ -27,6 +27,8 @@ class Machine(Base):
     id = Column(Integer, primary_key=True)
     ip = Column(String(16))
     name = Column(String(50), unique=True)
+    latitude = Column(String(20))
+    longitude = Column(String(20))
     #stats = relationship("Stats", order_by=Stats.id)
 
 class Logs(Base):

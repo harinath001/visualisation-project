@@ -22,7 +22,7 @@ def get_server_list():
         all_servers = session.query(Machine).all()
         names = []
         for each in all_servers:
-            names.append(each.name)
+            names.append({"name": each.name, "latitude": each.latitude, "longitude": each.longitude})
         retval = json.dumps(names)
     except Exception as ex:
         retval = {"exception": str(ex)}
