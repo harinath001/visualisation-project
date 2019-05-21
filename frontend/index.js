@@ -95,7 +95,7 @@ function get_stats_data(given_server_name){
 	//alert("asfsf");
     console.log("Getting stats data from server ", given_server_name);
     $.ajax({
-        url: 'http://172.24.21.187/stats/get?server_name='+given_server_name,
+        url: 'http://172.24.16.228/stats/get?server_name='+given_server_name,
         success: function(data) {
             console.log(data);
             handle_stats_data(data);
