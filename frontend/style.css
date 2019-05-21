@@ -11,23 +11,51 @@
     stroke: #fff;
 }
 .grid line {
-  stroke: lightgrey;
-  stroke-opacity: 0.7;
-  shape-rendering: crispEdges;
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
 }
 
 .grid path {
-  stroke-width: 0;
+    stroke-width: 0;
 }
 
 .axisWhite line{
-  stroke: white;
+    stroke: white;
 }
 
 .axisWhite path{
-  stroke: white;
+    stroke: white;
 }
 
 .axisWhite text{
-  fill: white;
+    fill: white;
+}
+
+.bar{ 
+    fill: steelblue; 
+}
+
+.reset {
+    padding-left: 1em;
+    font-size: smaller;
+    color: #ccc;
+}
+
+
+.background.bar {
+    fill: #ccc;
+  }
+
+  .foreground.bar {
+    fill: steelblue;
+  }
+
+  .brush-handle {
+    fill: #eee;
+    stroke: #666;
+  }
+
+.dc-chart .axis{
+  color: #ffffff;
 }
